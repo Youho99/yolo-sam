@@ -1,5 +1,7 @@
 # yolo-sam
 
+I use a conda env with python 3.10
+
 ## Installation
 
 Install dependencies:
