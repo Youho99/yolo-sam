@@ -1,5 +1,10 @@
 # yolo-sam
 
+## Installation
+
+Install dependencies:
+`pip install -r requirements.txt`
+
 ### Start MLflow server
 
 On a new command prompt:
