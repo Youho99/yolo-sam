@@ -8,8 +8,8 @@ imgsz: 1280
 save: False
 cache: ram
 device: 0
-project: yolosam
-name: yolosam
+project: mlflow-yolosam
+name: mlflow-yolosam
 pretrained: True
 optimizer: SGD
 seed: 0

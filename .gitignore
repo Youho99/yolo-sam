@@ -163,7 +163,7 @@ cython_debug/
 
 # Ultralytics
 runs/
-yolosam/
+mlflow-*/
 
 # MLflow
 mlruns/

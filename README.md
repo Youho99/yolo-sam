@@ -27,3 +27,5 @@ To start a training:
 cd ultralytics
 python train.py
 ```
+
+> Note that the folder containing the runs must be in a folder whose name begins with "mlflow-"
