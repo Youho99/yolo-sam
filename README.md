@@ -2,7 +2,7 @@
 
 I use a conda env with python 3.10
 
-For information, Ultralytics version of this repo is `8.2.97`
+For information, Ultralytics version of this repo is `8.2.97`, Segment-Anything-2 commit is `52198ead0eb13ae8270bea6ca768ef175f5bf167` (version `2.1.0`)
 
 ## Installation
 

@@ -53,6 +53,7 @@ from ultralytics.utils.torch_utils import (
     strip_optimizer,
     torch_distributed_zero_first,
 )
+import ultralytics.yolosam.utils as yolosam
 
 
 class BaseTrainer:
@@ -229,6 +230,12 @@ class BaseTrainer:
 
     def _setup_train(self, world_size):
         """Builds dataloaders and optimizer on correct rank process."""
+
+        # Initialize SAM2 model if yolosam parameter is enable
+        if self.args.yolosam:
+            LOGGER.info("Initialize SAM2 model...")
+            self.sam_model = yolosam.initialize_model("facebook/sam2-hiera-tiny")
+
         # Model
         self.run_callbacks("on_pretrain_routine_start")
         ckpt = self.setup_model()
@@ -383,6 +390,24 @@ class BaseTrainer:
                 with autocast(self.amp):
                     batch = self.preprocess_batch(batch)
                     self.loss, self.loss_items = self.model(batch)
+
+                    # yolosam processing ------------------------------
+                    if self.args.yolosam:  # Check if yolosam is enabled
+                        LOGGER.info("Processing bounding boxes with SAM model...")
+                        images = batch["img"]  # Assuming this contains your batch of images
+                        bboxes = outputs['boxes']  # Adjust based on your architecture
+
+                        new_bboxes_batch = []
+                        for img, img_bboxes in zip(images, bboxes):
+                            new_bboxes = []
+                            for bbox in img_bboxes:  # Iterate over each bbox for this image
+                                new_bbox, _ = sam_bbox(bbox, img, self.sam_model)
+                                new_bboxes.append(new_bbox)
+                            new_bboxes_batch.append(new_bboxes)
+
+                        outputs['boxes'] = new_bboxes_batch  # Update outputs with new bboxes
+                    # -------------------------------------------------
+
                     if RANK != -1:
                         self.loss *= world_size
                     self.tloss = (
@@ -478,6 +503,11 @@ class BaseTrainer:
                 self.plot_metrics()
             self.run_callbacks("on_train_end")
         self._clear_memory()
+
+        if self.args.yolosam:
+            LOGGER.info("Release of the SAM2 model")
+            del self.sam_model
+
         self.run_callbacks("teardown")
 
     def _get_memory(self):
