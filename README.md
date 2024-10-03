@@ -2,6 +2,8 @@
 
 I use a conda env with python 3.10
 
+For information, Ultralytics version of this repo is `8.2.97`
+
 ## Installation
 
 Install dependencies:
