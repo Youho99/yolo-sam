@@ -45,7 +45,8 @@ if __name__ == '__main__':
         deterministic=data['deterministic'],
         lr0=data['lr0'],
         verbose=data['verbose'],
-        val=data['val']
+        val=data['val'],
+        yolosam=data['yolosam']
     )
 
     print("Finished !")

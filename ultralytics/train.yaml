@@ -17,3 +17,4 @@ deterministic: True
 lr0: 0.01
 verbose: True
 val : True
+yolosam : False # Not implemented yet
