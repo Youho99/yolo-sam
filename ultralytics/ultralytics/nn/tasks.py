@@ -148,10 +148,12 @@ class BaseModel(nn.Module):
             y.append(x if m.i in self.save else None)  # save output
             if visualize:
                 feature_visualization(x, m.type, m.i, save_dir=visualize)
+
+            # Modified following this tutorial: https://y-t-g.github.io/tutorials/yolo-object-features/
             if embed and m.i in embed:
-                embeddings.append(nn.functional.adaptive_avg_pool2d(x, (1, 1)).squeeze(-1).squeeze(-1))  # flatten
+                embeddings.append(x)  # flatten
                 if m.i == max(embed):
-                    return torch.unbind(torch.cat(embeddings, 1), dim=0)
+                    return embeddings
         return x
 
     def _predict_augment(self, x):

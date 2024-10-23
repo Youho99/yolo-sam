@@ -35,28 +35,28 @@ def sam_bbox(bbox, image, model):
     return new_bbox, new_area
 
 
-def process_annotations(annotation_file, path_dir_images, model):
-    with open(annotation_file, "r") as f:
-        json_annotation = json.load(f)
+# def process_annotations(annotation_file, path_dir_images, model):
+#     with open(annotation_file, "r") as f:
+#         json_annotation = json.load(f)
 
-    images_dict = {image["id"]: image for image in json_annotation["images"]}
-    json_annotation_modified = deepcopy(json_annotation)
+#     images_dict = {image["id"]: image for image in json_annotation["images"]}
+#     json_annotation_modified = deepcopy(json_annotation)
 
-    for annotation in json_annotation_modified["annotations"]:
-        if "sam_bbox" in annotation and annotation["sam_bbox"] == 1:
-            continue
+#     for annotation in json_annotation_modified["annotations"]:
+#         if "sam_bbox" in annotation and annotation["sam_bbox"] == 1:
+#             continue
         
-        image_id = annotation["image_id"]
-        image_name = images_dict.get(image_id)["file_name"]
-        image = cv2.cvtColor(cv2.imread(os.path.join(path_dir_images, image_name)), cv2.COLOR_BGR2RGB)
+#         image_id = annotation["image_id"]
+#         image_name = images_dict.get(image_id)["file_name"]
+#         image = cv2.cvtColor(cv2.imread(os.path.join(path_dir_images, image_name)), cv2.COLOR_BGR2RGB)
         
-        bbox = annotation["bbox"]
-        new_bbox, new_area = sam_bbox(bbox, image, model)
-        annotation["bbox"] = new_bbox
-        annotation["area"] = new_area
-        annotation["sam_bbox"] = 1
+#         bbox = annotation["bbox"]
+#         new_bbox, new_area = sam_bbox(bbox, image, model)
+#         annotation["bbox"] = new_bbox
+#         annotation["area"] = new_area
+#         annotation["sam_bbox"] = 1
 
-    return json_annotation_modified
+#     return json_annotation_modified
 
 
 def bbox_to_xyxy(bbox):
