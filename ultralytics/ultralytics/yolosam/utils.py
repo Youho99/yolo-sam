@@ -15,24 +15,26 @@ def initialize_model(selected_model):
 
 
 def sam_bbox(bbox, image, model):
-    xyxy = bbox_to_xyxy(bbox)
+    xyxy = bbox.cpu().numpy()  # Convertir en numpy car SAM attend un tableau numpy
+
     with torch.inference_mode(), torch.autocast("cuda", dtype=torch.bfloat16):
         model.set_image(image)
         masks, _, _ = model.predict(point_coords=None, point_labels=None, box=xyxy, multimask_output=False)
 
+    # Calcul des nouvelles coordonnées de la bbox à partir des masques
     rows, cols = np.where(masks[0])
     x_min = np.min(cols)
     y_min = np.min(rows)
     x_max = np.max(cols)
     y_max = np.max(rows)
 
-    box_width = x_max - x_min
-    box_height = y_max - y_min
+    # Nouvelle bbox au format xyxy
+    new_bbox = [float(x_min), float(y_min), float(x_max), float(y_max)]
 
-    new_bbox = [float(x_min), float(y_min), float(box_width), float(box_height)]
-    new_area = float(box_width * box_height)
+    # Créer un tensor pour la nouvelle bbox sur le même device
+    new_bbox_tensor = torch.tensor(new_bbox, device=bbox.device).unsqueeze(0)
 
-    return new_bbox, new_area
+    return new_bbox_tensor
 
 
 def process_annotations(annotation_file, path_dir_images, model):
