@@ -1,7 +1,7 @@
 MLFLOW_TRACKING_URI: http://127.0.0.1:1234
 model: yolov8n.pt
 data: coco8.yaml
-epochs: 5
+epochs: 1
 patience: 50
 batch: 4
 imgsz: 1280
@@ -17,4 +17,4 @@ deterministic: True
 lr0: 0.01
 verbose: True
 val : True
-yolosam : True
+yolosam : False
